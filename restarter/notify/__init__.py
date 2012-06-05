@@ -22,11 +22,17 @@ def notify(request):
     phone = request.params.get('phone')
     email = request.params.get('email')
 
+    status = []
+
     if phone:
         login = settings.get('sms.username')
         password = settings.get('sms.password')
         sms.send_sms.delay(login, password, message, phone)
+        status.append('SMS sent')
 
     if email:
         mailer = get_mailer(request)
         emails.send_email.delay(mailer, message, email)
+        status.append('Email sent')
+
+    return status

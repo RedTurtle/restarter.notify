@@ -10,5 +10,5 @@ def send_email(mailer, message, email):
                       sender = FROM,
                       recipients=[email],
                       body = message)
-    mailer.send(message)
+    mailer.send_immediately(message)
     return {'OK'}
