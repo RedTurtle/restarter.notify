@@ -13,7 +13,8 @@ requires = [
     'waitress',
     'requests',
     'celery-with-redis',
-    'celerymon'
+    'celerymon',
+    'dogpile.cache'
     ]
 
 setup(name='restarter.notify',

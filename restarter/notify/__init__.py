@@ -1,3 +1,6 @@
+import datetime
+
+from dogpile.cache import make_region
 from pyramid.config import Configurator
 from pyramid.view import view_config
 from pyramid_mailer import get_mailer
@@ -36,3 +39,22 @@ def notify(request):
         status.append('Email sent')
 
     return status
+
+
+@view_config(route_name='notify', renderer='json', request_param='userid')
+def mytest(request):
+    return load_user_info(request.params['userid'])
+
+region = make_region().configure('dogpile.cache.redis',
+                                  expiration_time = 10,
+                                  arguments = {'host': 'localhost',
+                                               'port': 6379,
+                                               'db': 0,
+                                               'redis_expiration_time': 60*60*2,   # 2 hours
+                                               'distributed_lock':True
+                                               })
+
+@region.cache_on_arguments()
+def load_user_info(userid):
+    print 'getting number'
+    return str(datetime.datetime.now())
