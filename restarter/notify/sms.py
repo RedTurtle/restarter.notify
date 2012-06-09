@@ -18,11 +18,11 @@ def send_sms(login, password, message, phone):
     try:
         r = requests.get('%s/send' % GATEWAY, params=payload, timeout=TIMEOUT)
     except requests.exceptions.Timeout:
-        return {'NOK': 'Timeout'}
+        return {'KO': 'Timeout'}
     except requests.exceptions.ConnectionError:
-        return {'NOK': 'No connection'}
+        return {'KO': 'No connection'}
     text = r.text
     if 'ERR' in text:
-        return {'NOK': text}
+        return {'KO': text}
     else:
         return {'OK': text}

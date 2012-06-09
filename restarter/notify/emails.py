@@ -11,4 +11,4 @@ def send_email(mailer, message, email):
                       recipients=[email],
                       body = message)
     mailer.send_immediately(message)
-    return {'OK'}
+    return {'OK': 'Done'}

@@ -14,7 +14,7 @@ requires = [
     'requests',
     'celery-with-redis',
     'celerymon',
-    'dogpile.cache'
+    'dogpile.cache',
     ]
 
 setup(name='restarter.notify',
