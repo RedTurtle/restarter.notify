@@ -2,9 +2,9 @@ import requests
 from celery.task import task
 
 TIMEOUT = 5
-#GATEWAY = 'http://gateway.airtelco.com/raven/sms'
-GATEWAY = 'http://localhost'
+GATEWAY = 'http://gateway.airtelco.com/raven/sms'
 FROM = 'restartER Team'
+DEBUG = True
 
 @task
 def send_sms(login, password, message, phone):
@@ -16,7 +16,11 @@ def send_sms(login, password, message, phone):
                'quality' : 's', #standard not premium
                'body' : message }
     try:
-        r = requests.get('%s/send' % GATEWAY, params=payload, timeout=TIMEOUT)
+        if DEBUG:
+            print 'Going to send sms: %s' % payload
+            return {'OK'}
+        else:
+            r = requests.get('%s/send' % GATEWAY, params=payload, timeout=TIMEOUT)
     except requests.exceptions.Timeout:
         return {'KO': 'Timeout'}
     except requests.exceptions.ConnectionError:
