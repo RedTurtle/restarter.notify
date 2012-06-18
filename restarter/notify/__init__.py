@@ -61,7 +61,7 @@ def notify(request):
     password = settings.get('sms.password')
     email = request.params.get('email')
     email_message = request.params.get('email_message')
-    phone = request.params['phone']
+    phone = request.params.get('phone')
     phone_message = request.params.get('phone_message')
 
     if not email_message and phone_message:
