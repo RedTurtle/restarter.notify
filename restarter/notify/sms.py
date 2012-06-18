@@ -4,7 +4,7 @@ from celery.task import task
 TIMEOUT = 5
 GATEWAY = 'http://gateway.airtelco.com/raven/sms'
 FROM = 'restartER Team'
-DEBUG = True
+DEBUG = False
 
 @task
 def send_sms(login, password, message, phone):
@@ -13,7 +13,7 @@ def send_sms(login, password, message, phone):
                'phone': phone,
                'from' : FROM,
                'encoding' : 'utf8',
-               'quality' : 's', #standard not premium
+               'quality' : 'p', #standard not premium
                'body' : message }
     try:
         if DEBUG:
