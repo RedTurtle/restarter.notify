@@ -70,11 +70,11 @@ def notify(request):
     if not email and phone:
         return {'KO': 'No recipients.'}
 
-    if email:
+    if email and email_message:
         mailer = get_mailer(request)
         emails.send_email.delay(mailer, email_message, email)
 
-    if phone:
+    if phone and phone_message:
         sms.send_sms.delay(login, password, phone_message, phone)
 
     return 'OK'

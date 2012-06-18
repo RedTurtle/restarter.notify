@@ -1,8 +1,8 @@
 from pyramid_mailer.message import Message
 from celery.task import task
 
-SUBJECT = "Notification from restartER project"
-FROM = "admin@restarter.it"
+SUBJECT = "Notification from FacciamoAdesso project"
+FROM = "info@facciamoadesso.it"
 
 @task
 def send_email(mailer, message, email):
