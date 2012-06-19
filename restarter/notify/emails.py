@@ -1,12 +1,12 @@
 from pyramid_mailer.message import Message
 from celery.task import task
 
-SUBJECT = "Notification from FacciamoAdesso project"
 FROM = "info@facciamoadesso.it"
 
 @task
-def send_email(mailer, message, email):
-    message = Message(subject = SUBJECT,
+def send_email(mailer, message, subject, email):
+    subject = '[FacciamoAdesso] %s'
+    message = Message(subject = subject,
                       sender = FROM,
                       recipients=[email],
                       body = message)

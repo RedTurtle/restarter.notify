@@ -61,6 +61,8 @@ def notify(request):
     password = settings.get('sms.password')
     email = request.params.get('email')
     email_message = request.params.get('email_message')
+    email_subject = request.params.get('email_subject', 'project notification')
+
     phone = request.params.get('phone')
     phone_message = request.params.get('phone_message')
 
@@ -72,7 +74,7 @@ def notify(request):
 
     if email and email_message:
         mailer = get_mailer(request)
-        emails.send_email.delay(mailer, email_message, email)
+        emails.send_email.delay(mailer, email_message, email_subject, email)
 
     if phone and phone_message:
         sms.send_sms.delay(login, password, phone_message, phone)
