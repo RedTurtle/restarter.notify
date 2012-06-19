@@ -3,7 +3,7 @@ from celery.task import task
 
 TIMEOUT = 5
 GATEWAY = 'http://gateway.airtelco.com/raven/sms'
-FROM = 'restartER Team'
+FROM = 'facciamoadesso.it'
 DEBUG = False
 
 @task
