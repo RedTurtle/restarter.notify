@@ -45,7 +45,7 @@ def post_on_wall(page_secret, facebook_id, message):
     return {'OK':response.text}
 
 
-#@task
+@task
 def post_on_page(page_secret, link, name, description, properties, actions):
     params = {}
     token = get_page_token(page_secret)
