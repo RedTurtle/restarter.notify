@@ -1,6 +1,7 @@
 from urlparse import parse_qsl
 import requests
 from celery.task import task
+import json
 
 
 def get_fb_token(client_id, client_secret):
@@ -23,7 +24,7 @@ def post_an_action(client_id, client_secret, facebook_id, action, **params):
 
 
 @task
-def post_on_wall(client_id, client_secret, facebook_id, message, endpoint):
+def post_on_wall(client_id, client_secret, facebook_id, message):
     params = {}
     token = get_fb_token(client_id, client_secret)
     if not token:
@@ -33,3 +34,19 @@ def post_on_wall(client_id, client_secret, facebook_id, message, endpoint):
     params['message'] = message
     response = requests.post('https://graph.facebook.com/feed', params=params)
     return {'OK':response.text}
+
+
+@task
+def post_on_page(page_secret, link, name, description, properties, actions):
+    params = {}
+    params['access_token'] = page_secret
+    params['link'] = link
+    params['caption'] = link
+    params['name'] = name
+    params['description'] = description
+    params['picture'] = '%s/leadImage_mini' % link
+    params['properties'] = json.dumps(properties)
+    params['actions'] = json.dumps(actions)
+    response = requests.post('https://graph.facebook.com/facciamoadesso/feed', params=params)
+    return {'OK':response.text}
+
