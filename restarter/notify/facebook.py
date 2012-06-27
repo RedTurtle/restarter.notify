@@ -13,6 +13,15 @@ def get_fb_token(client_id, client_secret):
         return dict(parse_qsl(response.content))
 
 
+def get_page_token(page_secret):
+    response = requests.get('https://graph.facebook.com/me/accounts?access_token=%s' % page_secret)
+    if response.status_code == 200:
+        data = json.loads(response.text)
+        for page in data['data']:
+            if page['name'] == u'FacciamoAdesso':
+                return {'access_token': page['access_token']}
+
+
 @task
 def post_an_action(client_id, client_secret, facebook_id, action, **params):
     token = get_fb_token(client_id, client_secret)
@@ -24,9 +33,9 @@ def post_an_action(client_id, client_secret, facebook_id, action, **params):
 
 
 @task
-def post_on_wall(client_id, client_secret, facebook_id, message):
+def post_on_wall(page_secret, facebook_id, message):
     params = {}
-    token = get_fb_token(client_id, client_secret)
+    token = get_page_token(page_secret)
     if not token:
         return {'KO': 'Can not get fb token.'}
     params.update(token)
@@ -36,10 +45,13 @@ def post_on_wall(client_id, client_secret, facebook_id, message):
     return {'OK':response.text}
 
 
-@task
+#@task
 def post_on_page(page_secret, link, name, description, properties, actions):
     params = {}
-    params['access_token'] = page_secret
+    token = get_page_token(page_secret)
+    if not token:
+        return {'KO': 'Can not get fb token.'}
+    params.update(token)
     params['link'] = link
     params['caption'] = link
     params['name'] = name
