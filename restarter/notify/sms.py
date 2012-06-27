@@ -11,9 +11,9 @@ def send_sms(login, password, message, phone):
     payload = {'login': login,
                'password': password,
                'phone': phone,
-               'from' : FROM,
-               'encoding' : 'utf8',
-               'quality' : 'p', #standard not premium
+#               'from' : FROM,
+#               'encoding' : 'utf8',
+#               'quality' : 'p', #standard not premium
                'body' : message }
     try:
         if DEBUG:
