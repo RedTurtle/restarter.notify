@@ -38,9 +38,9 @@ def page_product_notify(request):
                             product_url,
                             product_title.title(),
                             product_description,
-                            {'Type': {'text': 'Facciamo products', 'href': 'http://www.facciamoadesso.it/prodotti'},
-                             'Links': {'text': 'Company that sells that', 'href': '%s/../../' % product_url}},
-                            {"name": "Buy this product", 
+                            {'Tipo': {'text': 'Prodotti di Facciamo', 'href': 'http://www.facciamoadesso.it/prodotti'},
+                             'Link': {'text': 'Azienda che lo vende', 'href': '%s/../../' % product_url}},
+                            {"name": "Compra questo prodotto", 
                              "link": "%s/createObject?type_name=Order" % product_url
                             })
     return 'OK'
@@ -64,9 +64,9 @@ def page_company_notify(request):
                                 company_url,
                                 company_title.title(),
                                 company_description,
-                                {'Type': {'text': 'Facciamo companies', 'href': 'http://www.facciamoadesso.it/aziende'},
-                                 'Links': {'text': 'Company\'s products', 'href': '%s/prodotti' % company_url}},
-                                {"name": "Register now", 
+                                {'Tipo': {'text': 'Aziende di Facciamo', 'href': 'http://www.facciamoadesso.it/aziende'},
+                                 'Link': {'text': 'Prodotti dell\'azienda', 'href': '%s/prodotti' % company_url}},
+                                {"name": "Registrati ora", 
                                  "link": "http://www.facciamoadesso.it/login"
                                 })
     return 'OK'
