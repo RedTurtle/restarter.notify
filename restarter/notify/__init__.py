@@ -67,7 +67,7 @@ def page_company_notify(request):
                                 {'Tipo': {'text': 'Aziende di Facciamo', 'href': 'http://www.facciamoadesso.it/aziende'},
                                  'Link': {'text': 'Prodotti dell\'azienda', 'href': '%s/prodotti' % company_url}},
                                 {"name": "Registrati ora", 
-                                 "link": "http://www.facciamoadesso.it/login"
+                                 "link": "http://www.facciamoadesso.it/il-progetto/partecipa"
                                 })
     return 'OK'
 
