@@ -22,6 +22,7 @@ def page_product_notify(request):
                             product_url,
                             product_title.title(),
                             product_description,
+                            '%s/leadImage_mini' % product_url,
                             {'Tipo': {'text': 'Prodotti di Facciamo', 'href': 'http://www.facciamoadesso.it/prodotti'},
                              'Link': {'text': 'Azienda che lo vende', 'href': '%s/../../' % product_url}},
                             {"name": "Compra questo prodotto", 
@@ -48,8 +49,36 @@ def page_company_notify(request):
                                 company_url,
                                 company_title.title(),
                                 company_description,
+                                '%s/leadImage_mini' % company_url,
                                 {'Tipo': {'text': 'Aziende di Facciamo', 'href': 'http://www.facciamoadesso.it/aziende'},
                                  'Link': {'text': 'Prodotti dell\'azienda', 'href': '%s/prodotti' % company_url}},
+                                {"name": "Registrati ora", 
+                                 "link": "http://www.facciamoadesso.it/il-progetto/partecipa"
+                                })
+    return 'OK'
+
+
+@view_config(route_name='page_demand_notify', renderer='json', request_method='POST')
+def page_demand_notify(request):
+    settings = request.registry.settings
+    page_secret = settings.get('fb.page_secret')
+    demand_url = request.params.get('demand_url')
+    if not demand_url:
+        return {'KO': 'No demand_url provided.'}
+    demand_title = request.params.get('demand_title')
+    if not demand_title:
+        return {'KO': 'No demand_title provided.'}
+    demand_description = request.params.get('demand_description')
+    if not demand_description:
+        return {'KO': 'No demand_description provided.'}
+
+    facebook.post_on_page.delay(page_secret,
+                                demand_url,
+                                demand_title.title(),
+                                demand_description,
+                                'http://www.facciamoadesso.it/logo_facciamo.png',
+                                {'Tipo': {'text': 'Richieste di Facciamo', 'href': 'http://www.facciamoadesso.it/offerte'},
+                                 'Link': {'text': 'Azienda che lo sta cercando', 'href': '%s/../../' % demand_url}},
                                 {"name": "Registrati ora", 
                                  "link": "http://www.facciamoadesso.it/il-progetto/partecipa"
                                 })
