@@ -95,7 +95,7 @@ def page_newsitem_notify(request):
     title = request.params.get('newsitem_title')
     if not title:
         return {'KO': 'No title provided.'}
-    description = request.params.get('description')
+    description = request.params.get('newsitem_description')
     if not description:
         return {'KO': 'No description provided.'}
 
