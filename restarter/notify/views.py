@@ -85,6 +85,32 @@ def page_demand_notify(request):
     return 'OK'
 
 
+@view_config(route_name='page_newsitem_notify', renderer='json', request_method='POST')
+def page_newsitem_notify(request):
+    settings = request.registry.settings
+    page_secret = settings.get('fb.page_secret')
+    url = request.params.get('newsitem_url')
+    if not url:
+        return {'KO': 'No newsitem_url provided.'}
+    title = request.params.get('newsitem_title')
+    if not title:
+        return {'KO': 'No title provided.'}
+    description = request.params.get('description')
+    if not description:
+        return {'KO': 'No description provided.'}
+
+    facebook.post_on_page.delay(page_secret,
+                                url,
+                                title.title(),
+                                description,
+                                '%s/image_mini' % url,
+                                {'Altre notizie': {'text': 'www.facciamoadesso.it/notizie', 'href': 'http://www.facciamoadesso.it/notizie'}},
+                                {"name": "Registrati ora", 
+                                 "link": "http://www.facciamoadesso.it/il-progetto/partecipa"
+                                })
+    return 'OK'
+
+
 @view_config(route_name='fb_newcompany_notify', renderer='json', request_param='facebook_id', request_method='POST')
 def fb_newcompany_notify(request):
     company_url = request.params.get('company_url')
