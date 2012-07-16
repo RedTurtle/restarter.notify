@@ -46,7 +46,7 @@ def post_on_wall(page_secret, facebook_id, message):
 
 
 @task
-def post_on_page(page_secret, link, name, description, picture, properties, actions):
+def post_on_page(page_secret, link, name, description, picture, properties, actions=None):
     params = {}
     token = get_page_token(page_secret)
     if not token:
@@ -58,7 +58,8 @@ def post_on_page(page_secret, link, name, description, picture, properties, acti
     params['description'] = description
     params['picture'] = picture
     params['properties'] = json.dumps(properties)
-    params['actions'] = json.dumps(actions)
+    if actions:
+        params['actions'] = json.dumps(actions)
     response = requests.post('https://graph.facebook.com/facciamoadesso/feed', params=params)
     return {'OK':response.text}
 
