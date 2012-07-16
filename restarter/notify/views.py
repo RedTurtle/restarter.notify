@@ -27,9 +27,9 @@ def page_product_notify(request):
                             '%s/leadImage_mini' % product_url,
                             {'Altre prodotti': {'text': 'http://www.facciamoadesso.it/prodotti', 'href': 'http://www.facciamoadesso.it/prodotti'},
                              'Link': {'text': 'Compra questo prodotto', 'href': "%s/createObject?type_name=Order" % product_url}},
-                            {"name": "Share", 
-                             "link": SHARE_LINK % product_url
-                            })
+                            #{"name": "Share", 
+                            # "link": SHARE_LINK % product_url}
+                            )
     return 'OK'
 
 
@@ -54,9 +54,9 @@ def page_company_notify(request):
                                 '%s/leadImage_mini' % company_url,
                                 {'Aziende di Facciamo': {'text': 'http://www.facciamoadesso.it/aziende', 'href': 'http://www.facciamoadesso.it/aziende'},
                                  'Link': {'text': 'Prodotti dell\'azienda', 'href': '%s/prodotti' % company_url}},
-                                {"name": "Share", 
-                                 "link": SHARE_LINK % company_url
-                                })
+                                #{"name": "Share", 
+                                # "link": SHARE_LINK % company_url}
+                                )
     return 'OK'
 
 
@@ -81,9 +81,9 @@ def page_demand_notify(request):
                                 'http://www.facciamoadesso.it/logo_facciamo.png',
                                 {'Richieste di Facciamo': {'text': 'http://www.facciamoadesso.it/offerte', 'href': 'http://www.facciamoadesso.it/offerte'},
                                  'Link': {'text': 'Azienda che lo sta cercando', 'href': '%s/../../' % demand_url}},
-                                {"name": "Share", 
-                                 "link": SHARE_LINK % demand_url
-                                })
+                                #{"name": "Share", 
+                                # "link": SHARE_LINK % demand_url}
+                                )
     return 'OK'
 
 
@@ -107,9 +107,9 @@ def page_newsitem_notify(request):
                                 description,
                                 '%s/image_mini' % url,
                                 {'Altre notizie': {'text': 'www.facciamoadesso.it/notizie', 'href': 'http://www.facciamoadesso.it/notizie'}},
-                                {"name": "Share", 
-                                 "link": SHARE_LINK % url
-                                })
+                                #{"name": "Share", 
+                                # "link": SHARE_LINK % url}
+                                )
     return 'OK'
 
 
