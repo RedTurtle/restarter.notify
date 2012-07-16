@@ -4,6 +4,8 @@ from pyramid_mailer import get_mailer
 from restarter.notify import sms, emails, facebook
 
 
+SHARE_LINK = 'http://www.facebook.com/share.php?u=%s'
+
 @view_config(route_name='page_product_notify', renderer='json', request_method='POST')
 def page_product_notify(request):
     settings = request.registry.settings
@@ -23,10 +25,10 @@ def page_product_notify(request):
                             product_title.title(),
                             product_description,
                             '%s/leadImage_mini' % product_url,
-                            {'Tipo': {'text': 'Prodotti di Facciamo', 'href': 'http://www.facciamoadesso.it/prodotti'},
-                             'Link': {'text': 'Azienda che lo vende', 'href': '%s/../../' % product_url}},
-                            {"name": "Compra questo prodotto", 
-                             "link": "%s/createObject?type_name=Order" % product_url
+                            {'Altre prodotti': {'text': 'http://www.facciamoadesso.it/prodotti', 'href': 'http://www.facciamoadesso.it/prodotti'},
+                             'Link': {'text': 'Compra questo prodotto', 'href': "%s/createObject?type_name=Order" % product_url}},
+                            {"name": "Share", 
+                             "link": SHARE_LINK % product_url
                             })
     return 'OK'
 
@@ -50,10 +52,10 @@ def page_company_notify(request):
                                 company_title.title(),
                                 company_description,
                                 '%s/leadImage_mini' % company_url,
-                                {'Tipo': {'text': 'Aziende di Facciamo', 'href': 'http://www.facciamoadesso.it/aziende'},
+                                {'Aziende di Facciamo': {'text': 'http://www.facciamoadesso.it/aziende', 'href': 'http://www.facciamoadesso.it/aziende'},
                                  'Link': {'text': 'Prodotti dell\'azienda', 'href': '%s/prodotti' % company_url}},
-                                {"name": "Registrati ora", 
-                                 "link": "http://www.facciamoadesso.it/il-progetto/partecipa"
+                                {"name": "Share", 
+                                 "link": SHARE_LINK % company_url
                                 })
     return 'OK'
 
@@ -77,10 +79,10 @@ def page_demand_notify(request):
                                 demand_title.title(),
                                 demand_description,
                                 'http://www.facciamoadesso.it/logo_facciamo.png',
-                                {'Tipo': {'text': 'Richieste di Facciamo', 'href': 'http://www.facciamoadesso.it/offerte'},
+                                {'Richieste di Facciamo': {'text': 'http://www.facciamoadesso.it/offerte', 'href': 'http://www.facciamoadesso.it/offerte'},
                                  'Link': {'text': 'Azienda che lo sta cercando', 'href': '%s/../../' % demand_url}},
-                                {"name": "Registrati ora", 
-                                 "link": "http://www.facciamoadesso.it/il-progetto/partecipa"
+                                {"name": "Share", 
+                                 "link": SHARE_LINK % demand_url
                                 })
     return 'OK'
 
@@ -105,8 +107,8 @@ def page_newsitem_notify(request):
                                 description,
                                 '%s/image_mini' % url,
                                 {'Altre notizie': {'text': 'www.facciamoadesso.it/notizie', 'href': 'http://www.facciamoadesso.it/notizie'}},
-                                {"name": "Registrati ora", 
-                                 "link": "http://www.facciamoadesso.it/il-progetto/partecipa"
+                                {"name": "Share", 
+                                 "link": SHARE_LINK % url
                                 })
     return 'OK'
 
