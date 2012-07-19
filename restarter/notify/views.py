@@ -1,7 +1,9 @@
+import json
+
 from pyramid.view import view_config
 from pyramid_mailer import get_mailer
 
-from restarter.notify import sms, emails, facebook
+from restarter.notify import sms, mailing, facebook
 
 
 SHARE_LINK = 'http://www.facebook.com/share.php?u=%s'
@@ -156,6 +158,13 @@ def notify(request):
     login = settings.get('sms.username')
     password = settings.get('sms.password')
     email = request.params.get('email')
+    emails = request.params.get('emails')
+    if emails:
+        emails = json.loads(emails)
+    else:
+        emails = []
+    if email:
+        emails.append(email)
     email_message = request.params.get('email_message')
     email_subject = request.params.get('email_subject', 'project notification')
 
@@ -165,12 +174,12 @@ def notify(request):
     if not email_message and phone_message:
         return {'KO': 'No message provided.'}
 
-    if not email and phone:
+    if not emails and phone:
         return {'KO': 'No recipients.'}
 
-    if email and email_message:
+    if emails and email_message:
         mailer = get_mailer(request)
-        emails.send_email.delay(mailer, email_message, email_subject, email)
+        mailing.send_emails.delay(mailer, email_message, email_subject, emails)
 
     if phone and phone_message:
         sms.send_sms.delay(login, password, phone_message, phone)
