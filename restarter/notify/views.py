@@ -205,6 +205,7 @@ def mailgun_photos(request):
     signature    = request.params.get('signature')
     timestamp    = request.params.get('timestamp')
 
+    import pdb; pdb.set_trace()
     isvalid = verify(api, token, timestamp, signature)
     if not isvalid:
         raise HTTPForbidden()
@@ -219,7 +220,6 @@ def mailgun_photos(request):
     for n in range(1,attachments_length+1):
         attachments.append(request.params.get('attachment-%s' % n))
 
-    import pdb; pdb.set_trace()
 
     return 'OK'
 
