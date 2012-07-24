@@ -229,7 +229,7 @@ def mailgun_photos(request):
     sender = request.params.get('sender')
     uid = request.matchdict['uid']
     response = requests.get(PLONE % 'path_from_uid?uid=%s&sender=%s' % (uid,sender))
-    if response.status_code == 204 or not response.text: #no content
+    if response.status_code != 200:
         raise HTTPForbidden()
     company_path = response.text
 
