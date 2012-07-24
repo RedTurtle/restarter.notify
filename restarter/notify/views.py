@@ -1,7 +1,10 @@
 import json
+#import requests
+import hashlib, hmac
 
 from pyramid.view import view_config
 from pyramid_mailer import get_mailer
+from pyramid.httpexceptions import HTTPForbidden
 
 from restarter.notify import sms, mailing, facebook
 
@@ -185,3 +188,48 @@ def notify(request):
         sms.send_sms.delay(login, password, phone_message, phone)
 
     return 'OK'
+
+
+def verify(api_key, token, timestamp, signature):
+        return signature == hmac.new(key=api_key,
+                                     msg='{}{}'.format(timestamp, token),
+                                     digestmod=hashlib.sha256).hexdigest()
+
+
+@view_config(route_name='mailgun_photos', renderer='json', request_method='POST')
+def mailgun_photos(request):
+
+    settings = request.registry.settings
+    api = settings.get('mailgun.api')
+    token    = request.params.get('token')
+    signature    = request.params.get('signature')
+    timestamp    = request.params.get('timestamp')
+
+    isvalid = verify(api, token, timestamp, signature)
+    if not isvalid:
+        raise HTTPForbidden()
+
+    sender    = request.params.get('sender')
+    subject   = request.params.get('subject', '')
+    body_plain = request.params.get('body-plain', '')
+    body_without_quotes = request.params.get('stripped-text', '')
+    attachments_length = int(request.params.get('attachment-count','0'))
+    attachments = []
+
+    for n in range(1,attachments_length+1):
+        attachments.append(request.params.get('attachment-%s' % n))
+
+    import pdb; pdb.set_trace()
+
+    return 'OK'
+
+    #uid = request.params['uid']
+    #r = requests.post("https://api.mailgun.net/v2/routes",
+    #         auth=("api", api),
+    #         data=[
+    #               ("priority", 1),
+    #               ("expression", "match_recipient('%s@facciamoadesso.mailgun.org')" % uid),
+    #               ("action", "forward('%s/mailgun/newmail/%s')" % (request.application_url, uid)),
+    #               ("action", "stop()")
+    #               ])
+    #return r.text
