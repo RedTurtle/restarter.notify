@@ -205,7 +205,6 @@ def mailgun_photos(request):
     signature    = request.params.get('signature')
     timestamp    = request.params.get('timestamp')
 
-    import pdb; pdb.set_trace()
     isvalid = verify(api, token, timestamp, signature)
     if not isvalid:
         raise HTTPForbidden()
