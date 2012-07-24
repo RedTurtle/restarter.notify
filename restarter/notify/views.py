@@ -1,15 +1,19 @@
 import json
-#import requests
+import requests
 import hashlib, hmac
+import os
 
+from tempfile import mkstemp
 from pyramid.view import view_config
 from pyramid_mailer import get_mailer
 from pyramid.httpexceptions import HTTPForbidden
 
-from restarter.notify import sms, mailing, facebook
+from restarter.notify import sms, mailing, facebook, plone
 
 
+BUFFER_SIZE = 8192
 SHARE_LINK = 'http://www.facebook.com/share.php?u=%s'
+PLONE = 'http://localhost:8081/restarter/%s'
 
 @view_config(route_name='page_product_notify', renderer='json', request_method='POST')
 def page_product_notify(request):
@@ -196,39 +200,54 @@ def verify(api_key, token, timestamp, signature):
                                      digestmod=hashlib.sha256).hexdigest()
 
 
+def serialize_upload(input_file, length, filename):
+    fd, filepath = mkstemp()
+    with os.fdopen(fd,'wb') as output:
+        q, r = divmod(length, BUFFER_SIZE)
+        buffers = [BUFFER_SIZE] * q + [r]
+        while buffers:
+            chunk = input_file.read(buffers.pop(0))
+            if not chunk:
+                # We will get there only if the content length (advertised
+                # by the browser) is larger than the effective length of
+                # the file, which should not happen.
+                break
+            output.write(chunk)
+            output.flush()
+    return filepath
+
 @view_config(route_name='mailgun_photos', renderer='json', request_method='POST')
 def mailgun_photos(request):
 
     settings = request.registry.settings
+    plone_key = settings.get('plone.key')
     api = settings.get('mailgun.api')
-    token    = request.params.get('token')
-    signature    = request.params.get('signature')
-    timestamp    = request.params.get('timestamp')
+    token = request.params.get('token')
+    signature = request.params.get('signature')
+    timestamp = request.params.get('timestamp')
+
+    sender = request.params.get('sender')
+    uid = request.matchdict['uid']
+    response = requests.get(PLONE % 'path_from_uid?uid=%s&sender=%s' % (uid,sender))
+    if response.status_code == 204 or not response.text: #no content
+        raise HTTPForbidden()
+    company_path = response.text
 
     isvalid = verify(api, token, timestamp, signature)
     if not isvalid:
         raise HTTPForbidden()
 
-    sender    = request.params.get('sender')
-    subject   = request.params.get('subject', '')
-    body_plain = request.params.get('body-plain', '')
-    body_without_quotes = request.params.get('stripped-text', '')
-    attachments_length = int(request.params.get('attachment-count','0'))
-    attachments = []
+    attachments_length = int(request.params.get('attachment-count','0')) + 1
 
-    for n in range(1,attachments_length+1):
-        attachments.append(request.params.get('attachment-%s' % n))
-
+    for n in range(1,attachments_length):
+        attachment = request.params.get('attachment-%s' % n)
+        #attachment = request.params.get('fileattachment-%s' % n)
+        if attachment is not None:
+            attachment_path = serialize_upload(attachment.file, attachment.length, attachment.filename) 
+            plone.upload_photo(plone_key,
+                               attachment_path,
+                               attachment.filename,
+                               company_path)
 
     return 'OK'
 
-    #uid = request.params['uid']
-    #r = requests.post("https://api.mailgun.net/v2/routes",
-    #         auth=("api", api),
-    #         data=[
-    #               ("priority", 1),
-    #               ("expression", "match_recipient('%s@facciamoadesso.mailgun.org')" % uid),
-    #               ("action", "forward('%s/mailgun/newmail/%s')" % (request.application_url, uid)),
-    #               ("action", "stop()")
-    #               ])
-    #return r.text
