@@ -244,7 +244,7 @@ def mailgun_photos(request):
         #attachment = request.params.get('fileattachment-%s' % n)
         if attachment is not None:
             attachment_path = serialize_upload(attachment.file, attachment.length, attachment.filename) 
-            plone.upload_photo(plone_key,
+            plone.upload_photo.delays(plone_key,
                                attachment_path,
                                attachment.filename,
                                company_path)

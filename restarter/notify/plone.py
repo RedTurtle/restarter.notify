@@ -12,6 +12,9 @@ def upload_photo(plone_key, filepath, filename, company_path):
     user, password = plone_key.split(':')
     photo = open(filepath, "rb")
     path = '%s/foto' % company_path
+    path = path.encode('utf8', 'ignore')
+    if not path.startswith('/restarter'):
+        return 'WRONG PATH %s' % path
     #upload using ftp
     try:
         ftp = FTP()
