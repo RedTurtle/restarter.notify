@@ -252,6 +252,7 @@ def mailgun_photos(request):
     signature = request.params.get('signature')
     timestamp = request.params.get('timestamp')
 
+    mailer = get_mailer(request)
     sender = request.params.get('sender')
     uid = request.matchdict['uid']
     response = requests.get(PLONE % 'path_from_uid?uid=%s&sender=%s' % (uid,sender))
@@ -273,7 +274,9 @@ def mailgun_photos(request):
             plone.upload_photo.delay(plone_key,
                                attachment_path,
                                attachment.filename,
-                               company_path)
+                               company_path,
+                               mailer,
+                               sender)
 
     return 'OK'
 

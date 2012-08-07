@@ -2,11 +2,17 @@ import os
 import socket
 from ftplib import FTP
 from celery.task import task
+from restarter.notify import mailing
 
 TIMEOUT = 5
+MESSAGE = """You have just uploaded %s into http://www.facciamoadesso.it%s folder.
+
+-------------------
+Il team di Facciamo"""
+
 
 @task
-def upload_photo(plone_key, filepath, filename, company_path):
+def upload_photo(plone_key, filepath, filename, company_path, mailer, sender):
 
     logger = upload_photo.get_logger()
     user, password = plone_key.split(':')
@@ -31,3 +37,5 @@ def upload_photo(plone_key, filepath, filename, company_path):
 
     photo.close()
     os.remove(filepath)
+
+    mailing.send_emails.delay(mailer, MESSAGE % (filename, path), 'Photo upload confirmation', [sender,])
