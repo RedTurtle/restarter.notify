@@ -13,6 +13,7 @@ def main(global_config, **settings):
     config.add_route('page_company_notify', '/notify/page/company')
     config.add_route('page_demand_notify', '/notify/page/demand')
     config.add_route('page_newsitem_notify', '/notify/page/newsitem')
+    config.add_route('page_companystory_notify', '/notify/page/companystory')
     config.add_route('mailgun_photos', '/mailgun/photos/{uid}')
     config.scan()
     return config.make_wsgi_app()

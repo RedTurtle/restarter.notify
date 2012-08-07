@@ -122,6 +122,32 @@ def page_newsitem_notify(request):
     return 'OK'
 
 
+@view_config(route_name='page_companystory_notify', renderer='json', request_method='POST')
+def page_companystory_notify(request):
+    settings = request.registry.settings
+    page_secret = settings.get('fb.page_secret')
+    url = request.params.get('item_url')
+    if not url:
+        return {'KO': 'No item_url provided.'}
+    title = request.params.get('item_title')
+    if not title:
+        return {'KO': 'No title provided.'}
+    description = request.params.get('item_description')
+    if not description:
+        return {'KO': 'No description provided.'}
+
+    facebook.post_on_page.delay(page_secret,
+                                url,
+                                title.title(),
+                                description,
+                                '%s/leadImage_mini' % url,
+                                {'Altre storie': {'text': 'www.facciamoadesso.it/storie', 'href': 'http://www.facciamoadesso.it/storie'}},
+                                {"name": "Share", 
+                                 "link": SHARE_LINK % url}
+                                )
+    return 'OK'
+
+
 @view_config(route_name='fb_newcompany_notify', renderer='json', request_param='facebook_id', request_method='POST')
 def fb_newcompany_notify(request):
     company_url = request.params.get('company_url')
